@@ -1,0 +1,181 @@
+﻿Version=2.5
+IconFile=
+NumberOfModules=3
+Module1=tools
+ModuleVisible1=1
+Module2=V2
+ModuleVisible2=1
+Module3=smsservice
+ModuleVisible3=1
+Package=b4a.j2
+DoNotOverwriteManifest=False
+ManifestCode='This code will be applied to the manifest file during compilation.~\n~'You do not need to modify it in most cases.~\n~'See this link for for more information: http://www.basic4ppc.com/forum/showthread.php?p=78136~\n~AddManifestText(~\n~<uses-sdk android:minSdkVersion="4" android:targetSdkVersion="14"/>~\n~<supports-screens android:largeScreens="true" ~\n~    android:normalScreens="true" ~\n~    android:smallScreens="true" ~\n~    android:anyDensity="true"/>)~\n~SetApplicationAttribute(android:icon, "@drawable/icon")~\n~SetApplicationAttribute(android:label, "$LABEL$")~\n~'End of default text.~\n~
+UserTypesHint=
+NumberOfFiles=4
+File1=testui.bal
+File2=title.bal
+File3=title2.bal
+File4=v2.bal
+NumberOfLibraries=7
+Library1=core
+Library2=encryption
+Library3=http
+Library4=json
+Library5=phone
+Library6=reflection
+Library7=stringutils
+@EndOfDesignText@
+#Region  Project Attributes 
+	#ApplicationLabel: B4A Example
+	#VersionCode: 1
+	#VersionName: 
+	'SupportedOrientations possible values: unspecified, landscape or portrait.
+	#SupportedOrientations: unspecified
+	#CanInstallToExternalStorage: False
+#End Region
+
+#Region  Activity Attributes 
+	#FullScreen: False
+	#IncludeTitle: False
+#End Region
+
+Sub Process_Globals
+'    Dim hc As HttpClient
+'    Dim out As OutputStream
+	Dim timeStart As Long
+End Sub
+Sub Globals
+    
+	Dim Button1 As Button
+	Dim Button2 As Button
+	Dim ImageView1 As ImageView
+	Dim b As Boolean
+	
+	Dim imgSearch As ImageView
+	Dim imgback As ImageView
+	Dim imgsearchgo As ImageView
+	Dim txtsearch As EditText
+	Dim ptitle As Panel
+	Dim ptitle2 As Panel
+End Sub
+Sub Activity_Create(FirstTime As Boolean)
+'    If FirstTime Then
+'        hc.Initialize("hc")
+'    End If
+'    Dim req As HttpRequest
+'    req.InitializeGet("http://www.baidu.com")
+'    hc.Execute(req, 1)
+	Activity.LoadLayout("testui")
+'	ImageView1.Initialize("")
+'	If File.Exists(File.DirAssets,"app1.png") Then
+'		ImageView1.Bitmap=LoadBitmap(File.DirAssets,"app1.png")
+'		Log("ok")
+'	Else
+'		Log("no")
+'	End If
+'	
+'	Log(Char(13))
+'	Log(Char(10))
+
+	Dim b64 As Base64
+	
+	Msgbox(b64.DecodeStoS("YW55c3RvcmU=","UTF-8"),"t")
+	Return
+	
+	ptitle.Initialize("")
+	ptitle.LoadLayout("title")
+	ptitle.Color=Colors.Gray
+	Activity.AddView(ptitle,0,0,Activity.Width,30dip)
+	
+	
+	ptitle2.Initialize("")
+	ptitle2.LoadLayout("title2")
+	ptitle2.Color=Colors.White
+	Activity.AddView(ptitle2,0,0,Activity.Width,30dip)
+	txtsearch.Color=Colors.Transparent
+	ptitle2.Visible=False
+	
+	timeStart=DateTime.Now
+	
+'	Dim verNew As String="0.945"
+'	Dim rtn As Int=Msgbox2("found new version v"&verNew&", Do you want to update?","Upgrade","Yes","","No",Null)
+'	If rtn=DialogResponse.POSITIVE Then
+'		Log("can upate")
+'	End If
+'	Log("can upate msgbox end")
+End Sub
+Sub imgSearch_Click
+	ptitle.Visible=False
+	ptitle2.Visible=True
+End Sub
+Sub imgback_click
+	ptitle.Visible=True
+	ptitle2.Visible=False
+End Sub
+Sub imgsearchgo_click
+	ToastMessageShow("search...",True)
+End Sub
+'Sub Activity_Click
+'    out.Close
+'End Sub
+'Sub hc_ResponseSuccess (Response As HttpResponse, TaskId As Int)
+'    out = File.OpenOutput(File.DirRootExternal, "1.dat", False)
+'  Log("Getting file asynchronously")
+'    Response.GetAsynchronously("res", out, True, TaskId)
+'End Sub
+'Sub hc_ResponseError (Response As HttpResponse, Reason As String, StatusCode As Int, TaskId As Int)
+'    
+'End Sub
+'
+'Sub res_StreamFinish (Success As Boolean, TaskId As Int)
+'    Log("StreamFinish: " & Success)
+'    If Success = False Then Log(LastException.Message)
+'End Sub
+Sub Activity_Pause(UserClosed As Boolean)
+
+End Sub
+Sub Activity_Resume
+
+End Sub
+
+Sub Button1_Click
+'	StartActivity("V2")
+'	Dim a As Intent
+	Dim Intent1 As Intent
+Intent1.Initialize(Intent1.ACTION_MAIN, "")
+Intent1.SetComponent("b4a.j2/.V2")
+StartActivity(Intent1)
+
+'	Dim x As Notification
+'	x.Initialize
+'	x.Icon="icon"
+'	x.AutoCancel=False
+'	x.Sound=True
+'	x.Vibrate=True
+'	x.SetInfo2("title","txt","",Me)
+'	x.Notify(2)
+	'Msgbox(ImageView1.Width,ImageView1.Height)
+'	Dim str As String="bytes 1048576-8050589/8050590"
+'	Log(str.SubString(str.LastIndexOf("/")+1))
+'	StartService("smsservice")
+'	Dim Sms As PhoneSms
+'	Sms.Send("9898741","test msg")
+'	Dim bc As String
+'	bc="5"
+'	Log(bc*1000)
+'	Log(IsPaused("V2"))
+	
+End Sub
+
+Sub SendSms(PhoneNumber As String, Text As String)
+    Dim ps As PhoneSms
+    Dim r As Reflector
+    r.Target = r.RunStaticMethod("android.telephony.SmsManager", "getDefault", Null, Null)
+    r.RunMethod4("sendTextMessage", Array As Object(PhoneNumber, Null, Text, Null, Null), _
+        Array As String("java.lang.String", "java.lang.String", "java.lang.String", _
+            "android.app.PendingIntent", "android.app.PendingIntent"))
+End Sub
+
+Sub cb
+	Msgbox("body","title")
+End Sub

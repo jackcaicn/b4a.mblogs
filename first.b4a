@@ -1,0 +1,105 @@
+﻿Version=2.5
+IconFile=
+NumberOfModules=1
+Module1=snd
+ModuleVisible1=1
+Package=b4a.first
+DoNotOverwriteManifest=False
+ManifestCode='This code will be applied to the manifest file during compilation.~\n~'You do not need to modify it in most cases.~\n~'See this link for for more information: http://www.basic4ppc.com/forum/showthread.php?p=78136~\n~AddManifestText(~\n~<uses-sdk android:minSdkVersion="4" android:targetSdkVersion="14"/>~\n~<supports-screens android:largeScreens="true" ~\n~    android:normalScreens="true" ~\n~    android:smallScreens="true" ~\n~    android:anyDensity="true"/>)~\n~SetApplicationAttribute(android:icon, "@drawable/icon")~\n~SetApplicationAttribute(android:label, "$LABEL$")~\n~'End of default text.~\n~
+UserTypesHint=
+NumberOfFiles=2
+File1=Main.bal
+File2=snd.bal
+NumberOfLibraries=2
+Library1=core
+Library2=http
+@EndOfDesignText@
+#Region  Project Attributes 
+	#ApplicationLabel: JackFirstAndroid
+	#VersionCode: 1
+	#VersionName: 
+	'SupportedOrientations possible values: unspecified, landscape or portrait.
+	#SupportedOrientations: unspecified
+	#CanInstallToExternalStorage: False
+#End Region
+
+#Region  Activity Attributes 
+	#FullScreen: False
+	#IncludeTitle: True
+#End Region
+
+Sub Process_Globals
+	'These global variables will be declared once when the application starts.
+	'These variables can be accessed from all modules.
+
+End Sub
+
+Sub Globals
+	'These global variables will be redeclared each time the activity is created.
+	'These variables can only be accessed from this module.
+
+	Dim Button1 As Button
+	Dim EditText1 As EditText
+	Dim Label1 As Label
+	Dim Label2 As Label
+	Dim Label3 As Label
+	Dim n1,n2 As Int
+	Dim req As HttpRequest
+	Dim http As HttpClient
+End Sub
+
+Sub Activity_Create(FirstTime As Boolean)
+	'Do not forget to load the layout file created with the visual designer. For example:
+	'Activity.LoadLayout("Layout1")
+	ProgressDialogShow("wait...") '加载
+	Activity.LoadLayout("Main")
+	http.Initialize("http")
+	gethtml
+End Sub
+
+Sub Activity_Resume
+
+End Sub
+
+Sub Activity_Pause (UserClosed As Boolean)
+
+End Sub
+
+
+
+Sub Button1_Click
+	
+	If EditText1.Text=n1+n2 Then
+		Msgbox("ok","jack")
+	Else
+		Msgbox("fail","jack")
+		new
+	End If
+	
+End Sub
+
+Sub new
+	n1=Rnd(1,10)
+	n2=Rnd(1,10)
+	Label1.Text=n1
+	Label2.Text=n2
+	
+End Sub
+Sub gethtml
+	
+	req.InitializeGet("http://m.cnblogs.com")
+	
+	http.Execute(req,9)
+	Log("req start")
+End Sub
+
+Sub http_ResponseSuccess (Response As HttpResponse, TaskId As Int)
+	ProgressDialogHide
+	Dim rtn As String
+	rtn=Response.GetString("UTF8")
+	Log(rtn)
+End Sub
+Sub http_ResponseError (Response As HttpResponse, Reason As String, StatusCode As Int, TaskId As Int)
+	Log(Reason)
+	Log(StatusCode)
+End Sub

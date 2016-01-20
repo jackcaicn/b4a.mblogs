@@ -1,0 +1,113 @@
+﻿Version=2.5
+IconFile=
+NumberOfModules=0
+Package=b4a.example
+DoNotOverwriteManifest=False
+ManifestCode='This code will be applied to the manifest file during compilation.~\n~'You do not need to modify it in most cases.~\n~'See this link for for more information: http://www.basic4ppc.com/forum/showthread.php?p=78136~\n~AddManifestText(~\n~<uses-sdk android:minSdkVersion="4" android:targetSdkVersion="14"/>~\n~<supports-screens android:largeScreens="true" ~\n~    android:normalScreens="true" ~\n~    android:smallScreens="true" ~\n~    android:anyDensity="true"/>)~\n~SetApplicationAttribute(android:icon, "@drawable/icon")~\n~SetApplicationAttribute(android:label, "$LABEL$")~\n~'End of default text.~\n~
+UserTypesHint=
+NumberOfFiles=0
+NumberOfLibraries=2
+Library1=ahviewpager
+Library2=core
+@EndOfDesignText@
+#Region  Project Attributes 
+	#ApplicationLabel: B4A Example
+	#VersionCode: 1
+	#VersionName: 
+	'SupportedOrientations possible values: unspecified, landscape or portrait.
+	#SupportedOrientations: unspecified
+	#CanInstallToExternalStorage: False
+#End Region
+
+#Region  Activity Attributes 
+	#FullScreen: False
+	#IncludeTitle: True
+#End Region
+
+Sub Process_Globals
+	'These global variables will be declared once when the application starts.
+	'These variables can be accessed from all modules.
+
+End Sub
+
+Sub Globals
+	'These global variables will be redeclared each time the activity is created.
+	'These variables can only be accessed from this module.
+	Dim container As AHPageContainer
+	Dim pager As AHViewPager
+	'Optionally you can use an AHViewPagerTabs object as a page indicator
+	Dim tabs As AHViewPagerTabs
+	
+	'This panel is just for a colored line between the tabs and the pages.
+	Dim line As Panel
+End Sub
+
+Sub Activity_Create(FirstTime As Boolean)
+	'Do not forget to load the layout file created with the visual designer. For example:
+	'Activity.LoadLayout("Layout1")	
+	
+	'Initialize the panels we use for the pages and put them in the container
+	container.Initialize
+	For i = 0 To 5
+		Dim pan As Panel
+
+		pan = CreatePanel("ListView " & (i - 1))
+		container.AddPage(pan,"ListView " & i)
+
+	Next
+	
+	'Now we have a container with our panels just add it to the pager object
+	pager.Initialize(container, "Pager")
+	
+	'As we want to show the tabs page indicator, we initialize it
+	tabs.Initialize(pager)
+	tabs.LineHeight = 5dip
+	tabs.UpperCaseTitle = True
+	Activity.AddView(tabs, 0, 0, -1, -2)
+	
+	'We add a line below the tab page indicator because it looks good
+	Dim col As ColorDrawable
+	col.Initialize(tabs.LineColorCenter, 0)
+	line.Initialize("")
+	line.Background=col
+	Activity.AddView(line, 0, 35dip, Activity.Width, 2dip)
+	
+	'Now we can add the pager to the activity
+	Activity.AddView(pager, 0, 35dip + 2dip, Activity.Width, Activity.Height-48dip-35dip-2dip)
+	
+	'color
+'	tabs.Color = Colors.Black
+'	tabs.BackgroundColorPressed = Colors.Blue
+'	tabs.LineColorCenter = Colors.Green
+'	tabs.TextColor = Colors.LightGray
+'	tabs.TextColorCenter = Colors.Green
+'	line.Color = Colors.Green
+End Sub
+
+Sub Activity_Resume
+
+End Sub
+
+Sub Activity_Pause (UserClosed As Boolean)
+
+End Sub
+
+Sub CreatePanel(Title As String) As Panel
+	Dim pan As Panel
+
+	pan.Initialize("")
+
+	Dim lv As ListView
+	
+	lv.Initialize("LV")
+	
+	For i = 0 To 30
+		lv.AddSingleLine("List Entry " & i)
+	Next
+	
+	pan.AddView(lv, 0, 0, -1, -1)
+
+	
+	pan.Tag = ""
+	Return pan
+End Sub

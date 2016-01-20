@@ -1,0 +1,130 @@
+﻿Version=2.5
+IconFile=
+NumberOfModules=3
+Module1=HttpUtils
+ModuleVisible1=1
+Module2=HttpUtilsService
+ModuleVisible2=1
+Module3=view
+ModuleVisible3=1
+Package=b4a.mblogs
+DoNotOverwriteManifest=False
+ManifestCode='This code will be applied to the manifest file during compilation.~\n~'You do not need to modify it in most cases.~\n~'See this link for for more information: http://www.basic4ppc.com/forum/showthread.php?p=78136~\n~AddManifestText(~\n~<uses-sdk android:minSdkVersion="4" android:targetSdkVersion="14"/>~\n~<supports-screens android:largeScreens="true" ~\n~    android:normalScreens="true" ~\n~    android:smallScreens="true" ~\n~    android:anyDensity="true"/>)~\n~SetApplicationAttribute(android:icon, "@drawable/icon")~\n~SetApplicationAttribute(android:label, "$LABEL$")~\n~'End of default text.~\n~
+UserTypesHint=
+NumberOfFiles=2
+File1=list.bal
+File2=view.bal
+NumberOfLibraries=2
+Library1=core
+Library2=http
+@EndOfDesignText@
+#Region  Project Attributes 
+	#ApplicationLabel: MblogsNews
+	#VersionCode: 1
+	#VersionName: 
+	'SupportedOrientations possible values: unspecified, landscape or portrait.
+	#SupportedOrientations: unspecified
+	#CanInstallToExternalStorage: False
+#End Region
+
+#Region  Activity Attributes 
+	#FullScreen: False
+	#IncludeTitle: False
+#End Region
+
+Sub Process_Globals
+	'These global variables will be declared once when the application starts.
+	'These variables can be accessed from all modules.
+	Dim b4a As String
+ 	b4a = "http://news.cnblogs.com/m"
+End Sub
+
+Sub Globals
+	'These global variables will be redeclared each time the activity is created.
+	'These variables can only be accessed from this module.
+
+	Dim Label1 As Label
+	Dim ListView1 As ListView
+End Sub
+
+Sub Activity_Create(FirstTime As Boolean)
+	Activity.LoadLayout("list")
+	HttpUtils.CallbackActivity = "Main" 'Current activity name.
+	HttpUtils.CallbackJobDoneSub = "JobDone"
+	HttpUtils.Download("Job1", b4a)
+	Label1.Top=0
+	Label1.Left=0
+	Label1.Height=40dip
+	Label1.Width=100%x
+	ListView1.Top=Label1.Height
+	ListView1.Left=0
+	ListView1.Height=100%y-Label1.Height
+	ListView1.Width=100%x
+'	Dim labItem As Label=ListView1.TwoLinesLayout.ItemHeight=60dip
+'	labItem.Width=100%x-Label1.Height
+'	labItem.Height=30dip
+'	labItem.TextSize=16
+'	Label=ListView1.TwoLinesLayout.ItemHeight=100dip
+	ProgressDialogShow("loading...")
+	Dim cd As ColorDrawable
+	cd.Initialize(Colors.Black, 5dip)
+	ListView1.Background=cd
+	Activity.AddMenuItem("Exit","mnuPage2")
+	Activity.AddMenuItem("About","mnuPage1")
+End Sub
+
+Sub Activity_Resume
+
+End Sub
+
+Sub Activity_Pause (UserClosed As Boolean)
+
+End Sub
+
+Sub JobDone (Job As String)
+	Dim s As String
+	If HttpUtils.IsSuccess(b4a) Then
+		s = HttpUtils.GetString(b4a)
+		'Log(s)
+		
+		newsList(s)
+	End If
+End Sub
+Sub newsList(html As String)
+	Dim reg As String
+	reg="<div class=~{0}~list_item~{0}~><a href=~{0}~/mv\?id=(\d{6})~{0}~>(.{1,40})</a>~{1}~(.{1,6}),<a href=~{0}~/mc\?id=\d{6}~{0}~>\d{1,3}</a>/\d{1,3},.{1,6}~{2}~</div>"
+	reg=reg.Replace("~{0}~",QUOTE)
+	reg=reg.Replace("~{1}~","\(")
+	reg=reg.Replace("~{2}~","\)")
+	'Log(reg)
+	
+	Dim mat As Matcher
+	mat=Regex.Matcher(reg,html)
+	Dim txt As String
+	Do While mat.Find
+		'Log(mat.Group(2))
+		txt=mat.Group(2)
+		If txt.Length>15 Then
+			txt=txt.SubString2(0,15)
+		End If
+		
+		ListView1.AddTwoLines2(txt,mat.Group(3),mat.Group(1))
+	Loop
+	ProgressDialogHide
+End Sub
+
+
+
+
+Sub ListView1_ItemClick (Position As Int, Value As Object)
+	'Msgbox(Value,"title")
+	CallSubDelayed2(View,"viewnews",Value)
+	
+End Sub
+
+Sub mnuPage1_Click
+	Msgbox("博客园新闻 for Android"&CRLF&CRLF&"Created by Basic4android"&CRLF&CRLF&"http://chy710.cnblogs.com","About")
+End Sub
+Sub mnuPage2_Click
+	ExitApplication 
+End Sub
